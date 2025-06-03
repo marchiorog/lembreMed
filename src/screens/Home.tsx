@@ -80,13 +80,13 @@ export default function Home({ navigation }: Props) {
       <View style={styles.cardText}>
         <Text style={styles.cardTitle}>{item.titulo}</Text>
         <Text style={styles.cardTime}>{item.dataHoraInicio
-        ? format(new Date(item.dataHoraInicio), 'dd/MM/yyyy HH:mm')
-        : ''
+          ? format(new Date(item.dataHoraInicio), 'dd/MM/yyyy HH:mm')
+          : ''
         }</Text>
       </View>
-    <TouchableOpacity onPress={() => handleDelete(item.id)}>
-    <Ionicons name="trash" size={20} color="#000" />
-    </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleDelete(item.id)}>
+        <Ionicons name="trash" size={20} color="#000" />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 

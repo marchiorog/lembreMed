@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../components/Navigation';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
-import { db } from '../services/firebaseConfig'; 
+import { db } from '../services/firebaseConfig';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -51,33 +51,33 @@ export default function Tarefa({ navigation }: Props) {
       Alert.alert('Permissão necessária', 'Permita acesso à galeria para escolher imagens.');
       return;
     }
-  
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
     });
-  
+
     if (!result.canceled) {
       setImagem(result.assets[0].uri);
     }
   };
-  
+
   const handleTakePicture = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permissão necessária', 'Permita acesso à câmera para tirar fotos.');
       return;
     }
-  
+
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
     });
-  
+
     if (!result.canceled) {
       setImagem(result.assets[0].uri);
     }
@@ -103,12 +103,12 @@ export default function Tarefa({ navigation }: Props) {
         return;
       }
 
-       // Juntar dataHoraInicio com a hora selecionada (data)
-       const dataInicio = new Date(dataHoraInicio);
-       dataInicio.setHours(data.getHours());
-       dataInicio.setMinutes(data.getMinutes());
-       dataInicio.setSeconds(0);
-       dataInicio.setMilliseconds(0);
+      // Juntar dataHoraInicio com a hora selecionada (data)
+      const dataInicio = new Date(dataHoraInicio);
+      dataInicio.setHours(data.getHours());
+      dataInicio.setMinutes(data.getMinutes());
+      dataInicio.setSeconds(0);
+      dataInicio.setMilliseconds(0);
 
       // Adiciona a tarefa no Firestore
       await addDoc(collection(db, "medicamentos"), {
@@ -116,7 +116,7 @@ export default function Tarefa({ navigation }: Props) {
         dataHoraInicio: dataInicio.toISOString(),
         frequenciaTipo,
         frequenciaQuantidade,
-        diasSemanaSelecionados, 
+        diasSemanaSelecionados,
         cor: cor,
         userId: user.uid,
       });
@@ -169,67 +169,67 @@ export default function Tarefa({ navigation }: Props) {
           />
 
           <Text style={styles.label}>Data de Início:</Text>
-                    <TouchableOpacity
-                      style={styles.info}
-                      onPress={() => setDatePickerVisible(true)}
-                    >
-                      <Text>{dataHoraInicio.toLocaleDateString()}</Text>
-                    </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.info}
+            onPress={() => setDatePickerVisible(true)}
+          >
+            <Text>{dataHoraInicio.toLocaleDateString()}</Text>
+          </TouchableOpacity>
 
-                    <DateTimePickerModal
-                      isVisible={datePickerVisible}
-                      mode="date"
-                      date={dataHoraInicio}
-                      onConfirm={(selectedDate) => {
-                        setDataHoraInicio(selectedDate);
-                        setDatePickerVisible(false);
-                      }}
-                      onCancel={() => setDatePickerVisible(false)}
-                    />
+          <DateTimePickerModal
+            isVisible={datePickerVisible}
+            mode="date"
+            date={dataHoraInicio}
+            onConfirm={(selectedDate) => {
+              setDataHoraInicio(selectedDate);
+              setDatePickerVisible(false);
+            }}
+            onCancel={() => setDatePickerVisible(false)}
+          />
 
-                    <Text style={styles.label}>Horário:</Text>
-                    <TouchableOpacity
-                      style={styles.timePicker}
-                      onPress={() => setTimePickerVisible(true)}
-                    >
-                      <Text style={styles.timeText}>
-                        {data.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </Text>
-                    </TouchableOpacity>
+          <Text style={styles.label}>Horário:</Text>
+          <TouchableOpacity
+            style={styles.timePicker}
+            onPress={() => setTimePickerVisible(true)}
+          >
+            <Text style={styles.timeText}>
+              {data.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </Text>
+          </TouchableOpacity>
 
-                    <DateTimePickerModal
-                      isVisible={isTimePickerVisible}
-                      mode="time"
-                      date={data}
-                      onConfirm={(selectedTime) => {
-                        setData(selectedTime);
-                        setTimePickerVisible(false);
-                      }}
-                      onCancel={() => setTimePickerVisible(false)}
-                    />
+          <DateTimePickerModal
+            isVisible={isTimePickerVisible}
+            mode="time"
+            date={data}
+            onConfirm={(selectedTime) => {
+              setData(selectedTime);
+              setTimePickerVisible(false);
+            }}
+            onCancel={() => setTimePickerVisible(false)}
+          />
 
-                    <Text style={styles.label}>Frequência:</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20 }}>
-                      {['diaria', 'hora', 'semana'].map(tipo => (
-                        <TouchableOpacity
-                          key={tipo}
-                          onPress={() => setFrequenciaTipo(tipo as any)}
-                          style={[
-                            styles.freqBtn,
-                            frequenciaTipo === tipo && styles.freqBtnSelected,
-                          ]}
-                        >
-                          <Text style={frequenciaTipo === tipo ? { color: 'white' } : {}}>
-                            {tipo === 'diaria' ? 'Diária' : tipo === 'hora' ? 'A cada X horas' : 'Semanal'}
-                          </Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
+          <Text style={styles.label}>Frequência:</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20 }}>
+            {['diaria', 'hora', 'semana'].map(tipo => (
+              <TouchableOpacity
+                key={tipo}
+                onPress={() => setFrequenciaTipo(tipo as any)}
+                style={[
+                  styles.freqBtn,
+                  frequenciaTipo === tipo && styles.freqBtnSelected,
+                ]}
+              >
+                <Text style={frequenciaTipo === tipo ? { color: 'white' } : {}}>
+                  {tipo === 'diaria' ? 'Diária' : tipo === 'hora' ? 'A cada X horas' : 'Semanal'}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-            {frequenciaTipo === 'hora' && (
-              <>
-                <Text style={styles.label}>A cada quantas horas?</Text>
-                <CustomInput
+          {frequenciaTipo === 'hora' && (
+            <>
+              <Text style={styles.label}>A cada quantas horas?</Text>
+              <CustomInput
                 value={freqInputText}
                 onChangeText={text => {
                   setFreqInputText(text);
@@ -237,11 +237,11 @@ export default function Tarefa({ navigation }: Props) {
                   if (!isNaN(num) && num > 0) {
                     setFrequenciaQuantidade(num);
                   }
-                } }
+                }}
                 keyboardType="numeric"
-                placeholder="Ex: 8" placeholderTextColor={''}                />
-              </>
-            )}
+                placeholder="Ex: 8" placeholderTextColor={''} />
+            </>
+          )}
 
           {frequenciaTipo === 'semana' && (
             <>
@@ -289,50 +289,50 @@ export default function Tarefa({ navigation }: Props) {
           <Text style={styles.label}>Foto do medicamento:</Text>
 
           <TouchableOpacity onPress={() => setImageOptionsVisible(true)} style={styles.imagePicker}>
-          {imagem ? (
-            <Image
-              source={{ uri: imagem }}
-              style={styles.imagePreview}
-              resizeMode="contain"
-            />
-          ) : (
-            <Text style={styles.imagePlaceholderText}>Toque para adicionar imagem</Text>
-          )}
-        </TouchableOpacity>
-
-        <Modal
-          isVisible={isImageOptionsVisible}
-          onBackdropPress={() => setImageOptionsVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <TouchableOpacity style={styles.modalButton} onPress={async () => {
-              setImageOptionsVisible(false);
-              await handleTakePicture();
-            }}>
-              <Text style={styles.modalButtonText}>Tirar foto</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.modalButton} onPress={async () => {
-              setImageOptionsVisible(false);
-              await handleChooseImage();
-            }}>
-              <Text style={styles.modalButtonText}>Escolher da galeria</Text>
-            </TouchableOpacity>
-
-            {imagem && (
-              <TouchableOpacity style={[styles.modalButton, { backgroundColor: '#ffcccc' }]} onPress={() => {
-                setImageOptionsVisible(false);
-                setImagem(null);
-              }}>
-                <Text style={[styles.modalButtonText, { color: '#a00' }]}>Remover imagem</Text>
-              </TouchableOpacity>
+            {imagem ? (
+              <Image
+                source={{ uri: imagem }}
+                style={styles.imagePreview}
+                resizeMode="contain"
+              />
+            ) : (
+              <Text style={styles.imagePlaceholderText}>Toque para adicionar imagem</Text>
             )}
+          </TouchableOpacity>
 
-            <TouchableOpacity style={styles.modalCancelButton} onPress={() => setImageOptionsVisible(false)}>
-              <Text style={styles.modalButtonText}>Cancelar</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+          <Modal
+            isVisible={isImageOptionsVisible}
+            onBackdropPress={() => setImageOptionsVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <TouchableOpacity style={styles.modalButton} onPress={async () => {
+                setImageOptionsVisible(false);
+                await handleTakePicture();
+              }}>
+                <Text style={styles.modalButtonText}>Tirar foto</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.modalButton} onPress={async () => {
+                setImageOptionsVisible(false);
+                await handleChooseImage();
+              }}>
+                <Text style={styles.modalButtonText}>Escolher da galeria</Text>
+              </TouchableOpacity>
+
+              {imagem && (
+                <TouchableOpacity style={[styles.modalButton, { backgroundColor: '#ffcccc' }]} onPress={() => {
+                  setImageOptionsVisible(false);
+                  setImagem(null);
+                }}>
+                  <Text style={[styles.modalButtonText, { color: '#a00' }]}>Remover imagem</Text>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity style={styles.modalCancelButton} onPress={() => setImageOptionsVisible(false)}>
+                <Text style={styles.modalButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
 
           <CustomButton title="Salvar" style={styles.saveButton} onPress={handleSave} />
 
@@ -503,5 +503,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#2196f3",
   },
 
-  
+
 });

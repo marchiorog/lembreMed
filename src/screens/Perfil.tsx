@@ -22,7 +22,7 @@ export default function Perfil({ navigation }: Props) {
   const [user, setUser] = useState<User | null>(null);
   const [nome, setNome] = useState('teste');
   const [email, setEmail] = useState('teste@email.com');
-  const userProfileImage  =  'sem foto';
+  const userProfileImage = 'sem foto';
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
