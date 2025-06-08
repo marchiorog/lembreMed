@@ -6,8 +6,10 @@ def criar_bula(nome, descricao, efeitos, controlado, intervalo_uso):
     cur.execute(
         "INSERT INTO bulas (nome, descricao, efeitos_colaterais, controlado, intervalo_uso) VALUES (?, ?, ?, ?, ?)",
         (nome, descricao, ",".join(efeitos), int(controlado), intervalo_uso))
+    bula_id = cur.lastrowid
     con.commit()
     con.close()
+    return bula_id
 
 def buscar_bula(bula_id):
     con = get_connection()
