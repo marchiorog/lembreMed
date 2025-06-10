@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Alert, Dimensions, StyleSheet, ScrollView
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
 import { db } from '../services/firebaseConfig';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { doc, collection, addDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as ImagePicker from 'expo-image-picker';
@@ -30,6 +30,7 @@ export default function AdicionarMedicamento({ navigation }: Props) {
   const [dataHoraInicio, setDataHoraInicio] = useState(new Date());
   const [isFreqInputVisible, setFreqInputVisible] = useState(false);
   const [freqInputText, setFreqInputText] = useState(frequenciaQuantidade.toString());
+  const [notificationId, setNotificationId] = useState<string | null>(null);
 
   useEffect(() => {
     async function criarCanal() {
@@ -123,7 +124,7 @@ export default function AdicionarMedicamento({ navigation }: Props) {
 
     {
       if (frequenciaTipo === 'diaria') {
-        await Notifications.scheduleNotificationAsync({
+        const id = await Notifications.scheduleNotificationAsync({
           content: {
             title: '🔔 Hora do medicamento!',
             body: `Tome seu medicamento: ${titulo}`,
@@ -139,12 +140,16 @@ export default function AdicionarMedicamento({ navigation }: Props) {
           },
         });
 
+        await updateDoc(doc(db, 'medicamentos', idMedicamento), {
+          notificationId: id,
+        });
+
       } else if (frequenciaTipo === 'horas') {
         // Expo Notifications não suporta triggers com intervalo em horas, precisa transformar em segundos: X horas * 3600 segundos
 
         const intervalSeconds = frequenciaQuantidade * 3600;
 
-        await Notifications.scheduleNotificationAsync({
+        const id = await Notifications.scheduleNotificationAsync({
           content: {
             title: '🔔 Hora do medicamento!',
             body: `Tome seu medicamento: ${titulo}`,
@@ -157,6 +162,10 @@ export default function AdicionarMedicamento({ navigation }: Props) {
             repeats: true,
             channelId: 'medicamentos',
           },
+        });
+
+        await updateDoc(doc(db, 'medicamentos', idMedicamento), {
+          notificationId: id,
         });
 
       } else if (frequenciaTipo === 'semana') {
@@ -180,7 +189,7 @@ export default function AdicionarMedicamento({ navigation }: Props) {
             proximoDia.setDate(proximoDia.getDate() + diff);
           }
 
-          await Notifications.scheduleNotificationAsync({
+          const id = await Notifications.scheduleNotificationAsync({
             content: {
               title: '🔔 Hora do medicamento!',
               body: `Tome seu medicamento: ${titulo}`,
@@ -196,6 +205,11 @@ export default function AdicionarMedicamento({ navigation }: Props) {
               channelId: 'medicamentos',
             },
           });
+
+          await updateDoc(doc(db, 'medicamentos', idMedicamento), {
+            notificationId: id,
+          });
+
         }
       }
     }
@@ -228,7 +242,7 @@ export default function AdicionarMedicamento({ navigation }: Props) {
       dataInicio.setSeconds(0);
       dataInicio.setMilliseconds(0);
 
-
+      console.log(notificationId)
       // Adiciona a tarefa no Firestore
       const docRef = await addDoc(collection(db, "medicamentos"), {
         titulo: titulo,
@@ -238,6 +252,7 @@ export default function AdicionarMedicamento({ navigation }: Props) {
         diasSemanaSelecionados,
         cor: cor,
         userId: user.uid,
+        notificationId: notificationId
       });
 
       // Agendar notificação para o horário definido

@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { TabParamList, RootStackParamList } from '../types/types';
+import * as Notifications from 'expo-notifications';
 
 type HomeNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList, 'Home'>,
@@ -65,8 +66,13 @@ export default function Home({ navigation }: Props) {
     }, [])
   );
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, notificationId: string) => {
     try {
+
+      if (notificationId) {
+        await Notifications.cancelScheduledNotificationAsync(notificationId);
+      }
+
       await deleteDoc(doc(db, 'medicamentos', id));
       setMedicamentos((prev) => prev.filter((tarefa) => tarefa.id !== id));
       Alert.alert('Sucesso', 'Lembrete excluído com sucesso!');
@@ -95,7 +101,7 @@ export default function Home({ navigation }: Props) {
       <TouchableOpacity
         onPress={(event) => {
           event.stopPropagation();
-          handleDelete(item.id);
+          handleDelete(item.id, item.notificationId);
         }}
       >
         <Ionicons name="trash" size={20} color="#000" />
