@@ -55,24 +55,6 @@ export default function AdicionarMedicamento({ navigation }: Props) {
     criarCanal();
   }, []);
 
-  useEffect(() => {
-    async function registrarPushNotification() {
-      const { status } = await Notifications.requestPermissionsAsync();
-
-      if (status !== 'granted') {
-        Alert.alert('Permissão negada', 'Você não receberá as notificações.');
-        return;
-      }
-
-      // const token = (await Notifications.getExpoPushTokenAsync()).data;
-      const token = await Notifications.getExpoPushTokenAsync({
-        projectId: 'SEU_PROJECT_ID_AQUI',
-      });
-      console.log('Expo Push Token:', token);
-    }
-
-    registrarPushNotification();
-  }, []);
 
   useEffect(() => {
   async function carregarMedicamentos() {
@@ -167,9 +149,9 @@ export default function AdicionarMedicamento({ navigation }: Props) {
         });
 
       } else if (frequenciaTipo === 'horas') {
-        // Expo Notifications não suporta triggers com intervalo em horas, precisa transformar em segundos: X horas * 3600 segundos
+  
 
-        const intervalSeconds = frequenciaQuantidade * 3600;
+        const intervalSeconds = frequenciaQuantidade;
 
         await Notifications.scheduleNotificationAsync({
           content: {

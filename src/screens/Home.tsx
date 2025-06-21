@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
@@ -8,6 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SearchBar from '../components/SearchBar';
@@ -17,6 +18,7 @@ import { getAuth } from "firebase/auth";
 import { query, where } from '../services/firebaseConfig';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { format } from 'date-fns';
+import * as Notifications from 'expo-notifications';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { TabParamList, RootStackParamList } from '../types/types';
@@ -36,7 +38,28 @@ export default function Home({ navigation }: Props) {
   const [search, setSearch] = useState('');
   const [medicamentos, setMedicamentos] = useState<any[]>([]);
 
+
+  useEffect(() => {
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('medicamentos', {
+      name: 'Lembretes de Medicamento',
+      importance: Notifications.AndroidImportance.HIGH,
+      sound: 'default',
+    });
+  }
+}, []);
+
+  useEffect(() => {
+  Notifications.requestPermissionsAsync().then(({ status }) => {
+    if (status !== 'granted') {
+      Alert.alert('Permissão negada', 'O app não poderá mostrar lembretes.');
+    }
+  });
+}, []);
+
   useFocusEffect(
+
+    
     useCallback(() => {
       const fetchMedicamentos = async () => {
         try {
