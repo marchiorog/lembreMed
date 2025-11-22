@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useGeminiChat } from '@services/chatGemini';
+import { MessageText } from '@components/MessageText';
 import styles from './styles';
 
 interface Message {
@@ -163,12 +164,12 @@ const Chat = () => {
       styles.messageContainer,
       item.isUser ? styles.userMessage : styles.botMessage
     ]}>
-      <Text style={[
-        styles.messageText,
-        item.isUser ? styles.userMessageText : styles.botMessageText
-      ]}>
-        {item.text}
-      </Text>
+      <MessageText 
+        message={item.text}
+        isUser={item.isUser}
+        // Passamos os estilos originais do texto do usuário para manter a consistência
+        userTextStyle={[styles.messageText, styles.userMessageText]} 
+      />
       <Text style={styles.timestamp}>
         {item.timestamp.toLocaleTimeString('pt-BR', { 
           hour: '2-digit', 

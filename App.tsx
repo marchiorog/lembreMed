@@ -4,7 +4,8 @@ import * as Notifications from 'expo-notifications';
 import { Alert } from 'react-native';
 //import Toast from 'react-native-toast-message';
 //import * as SplashScreen from 'expo-splash-screen';
-import { UserProvider } from './src/context/UserContext'; 
+import { UserProvider } from './src/context/UserContext';
+import { FIREBASE_API_KEY } from "@env";
 
 //SplashScreen.preventAutoHideAsync();
 
