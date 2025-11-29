@@ -538,7 +538,12 @@ export function useGeminiChat() {
       const prompt = `Analise a pergunta do usuário e determine a melhor estratégia de resposta.
 
       Pergunta: "${mensagem}"
-      Dados do usuário: ${dadosUsuario ? JSON.stringify(dadosUsuario, null, 2) : 'Nenhum dado encontrado'}
+      Dados do usuário (medicamentos cadastrados): ${dadosUsuario ? JSON.stringify(dadosUsuario.medicamentos, null, 2) : 'Nenhum dado encontrado'}
+
+      Instruções para decisão da estratégia:
+      1. Use **"dados_locais"** se a pergunta for ESPECÍFICA sobre os medicamentos CADASTRADOS (ex: "Qual o horário do meu Paracetamol?", "Quantos medicamentos tenho?").
+      2. Use **"pesquisa_web"** se a pergunta for SOBRE informações médicas GERAIS (ex: "O que é Febre?", "Efeitos do Ibuprofeno").
+      3. Use **"ambos"** se a pergunta for sobre um medicamento CADASTRADO e também solicitar informações médicas GERAIS sobre ele (ex: "Qual a dosagem do meu X e quais são seus efeitos?").
 
       Responda APENAS com uma das opções:
       1. "dados_locais"
